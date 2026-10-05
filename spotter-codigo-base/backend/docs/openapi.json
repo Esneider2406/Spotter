@@ -1,0 +1,615 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Spotter API",
+    "version": "1.0.0",
+    "description": "API REST de Spotter: conecta personas para entrenar y facilita el contacto con entrenadores."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Estado del servidor",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/registro": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Crear cuenta (usuario o entrenador)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nombre",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "rol": {
+                    "type": "string",
+                    "enum": [
+                      "usuario",
+                      "entrenador"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cuenta creada. Devuelve usuario y token"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "409": {
+            "description": "Correo ya registrado"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Iniciar sesión",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Devuelve usuario y token JWT"
+          },
+          "401": {
+            "description": "Credenciales incorrectas"
+          }
+        }
+      }
+    },
+    "/api/perfil": {
+      "get": {
+        "tags": [
+          "Perfil"
+        ],
+        "summary": "Ver mi perfil",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario y perfil"
+          },
+          "401": {
+            "description": "Sin token"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Perfil"
+        ],
+        "summary": "Crear o actualizar mi perfil deportivo (rol usuario)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "objetivo",
+                  "nivel",
+                  "horarios"
+                ],
+                "properties": {
+                  "objetivo": {
+                    "type": "string",
+                    "enum": [
+                      "perder_peso",
+                      "ganar_musculo",
+                      "resistencia",
+                      "salud_general",
+                      "rendimiento"
+                    ]
+                  },
+                  "nivel": {
+                    "type": "string",
+                    "enum": [
+                      "principiante",
+                      "intermedio",
+                      "avanzado"
+                    ]
+                  },
+                  "tipo_entrenamiento": {
+                    "type": "string"
+                  },
+                  "horarios": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "manana",
+                        "tarde",
+                        "noche"
+                      ]
+                    }
+                  },
+                  "ciudad": {
+                    "type": "string"
+                  },
+                  "bio": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil guardado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "403": {
+            "description": "Solo rol usuario"
+          }
+        }
+      }
+    },
+    "/api/descubrir": {
+      "get": {
+        "tags": [
+          "Descubrimiento"
+        ],
+        "summary": "Personas compatibles ordenadas por puntaje (0-100)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de perfiles con compatibilidad"
+          },
+          "400": {
+            "description": "Perfil incompleto"
+          }
+        }
+      }
+    },
+    "/api/likes/{id}": {
+      "post": {
+        "tags": [
+          "Match"
+        ],
+        "summary": "Dar Me gusta. Si es mutuo se crea el Match",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ match: true | false }"
+          },
+          "400": {
+            "description": "Destino inválido"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/solicitudes": {
+      "post": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Enviar un único mensaje de solicitud (máx. 5 por día)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "a",
+                  "mensaje"
+                ],
+                "properties": {
+                  "a": {
+                    "type": "integer"
+                  },
+                  "mensaje": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Solicitud creada"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "409": {
+            "description": "Ya enviada o ya hay Match"
+          },
+          "429": {
+            "description": "Límite diario"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Solicitudes pendientes que recibí",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista"
+          }
+        }
+      }
+    },
+    "/api/solicitudes/{id}": {
+      "put": {
+        "tags": [
+          "Solicitudes"
+        ],
+        "summary": "Aceptar o rechazar una solicitud",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "estado"
+                ],
+                "properties": {
+                  "estado": {
+                    "type": "string",
+                    "enum": [
+                      "aceptada",
+                      "rechazada"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Solicitud actualizada"
+          },
+          "404": {
+            "description": "No encontrada o ya respondida"
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Contactos con los que puedo chatear (Match o solicitud aceptada)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista"
+          }
+        }
+      }
+    },
+    "/api/chat/{id}": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Historial con una persona",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mensajes"
+          },
+          "403": {
+            "description": "Sin Match ni solicitud aceptada"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "Enviar mensaje",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contenido"
+                ],
+                "properties": {
+                  "contenido": {
+                    "type": "string",
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mensaje enviado"
+          },
+          "400": {
+            "description": "Mensaje inválido"
+          },
+          "403": {
+            "description": "Sin Match ni solicitud aceptada"
+          }
+        }
+      }
+    },
+    "/api/entrenadores": {
+      "get": {
+        "tags": [
+          "Entrenadores"
+        ],
+        "summary": "Listar entrenadores",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista"
+          }
+        }
+      }
+    },
+    "/api/entrenadores/perfil": {
+      "put": {
+        "tags": [
+          "Entrenadores"
+        ],
+        "summary": "Publicar o editar mi perfil de entrenador (rol entrenador)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "especialidad",
+                  "experiencia_anios"
+                ],
+                "properties": {
+                  "especialidad": {
+                    "type": "string"
+                  },
+                  "experiencia_anios": {
+                    "type": "integer"
+                  },
+                  "descripcion": {
+                    "type": "string"
+                  },
+                  "tarifa": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil guardado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "403": {
+            "description": "Solo rol entrenador"
+          }
+        }
+      }
+    },
+    "/api/reportes": {
+      "post": {
+        "tags": [
+          "Seguridad"
+        ],
+        "summary": "Reportar comportamiento inapropiado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reportado",
+                  "motivo"
+                ],
+                "properties": {
+                  "reportado": {
+                    "type": "integer"
+                  },
+                  "motivo": {
+                    "type": "string",
+                    "maxLength": 300
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reporte registrado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    }
+  }
+}

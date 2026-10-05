@@ -1,0 +1,22 @@
+\xef\xbb\xbfID;Historia de usuario;Pasos para reproducir;Resultado esperado;Estado
+CP-01;Registro de usuarios;1. Abrir /login 2. Elegir "Crear cuenta" 3. Llenar nombre, correo válido y contraseña de 8+ caracteres 4. Enviar;Se crea la cuenta y se entra a la app;Pendiente
+CP-02;Registro de usuarios;Registrarse con un correo que ya existe;Mensaje "El correo ya está registrado" (409);Pendiente
+CP-03;Registro de usuarios;Registrarse con correo sin formato válido o contraseña de menos de 8 caracteres;Se muestran los errores de validación (400);Pendiente
+CP-04;Registro de usuarios;Iniciar sesión con contraseña incorrecta;Mensaje "Credenciales incorrectas" (401);Pendiente
+CP-05;Perfil deportivo;Completar objetivo, nivel y al menos un horario y guardar;Perfil guardado y visible al recargar;Pendiente
+CP-06;Perfil deportivo;Guardar el perfil sin horarios;Mensaje de error de validación (400);Pendiente
+CP-07;Descubrimiento de personas;Con el perfil completo abrir Descubrir;Se listan personas con % de compatibilidad ordenadas de mayor a menor;Pendiente
+CP-08;Descubrimiento de personas;Abrir Descubrir sin haber completado el perfil;Mensaje pidiendo completar el perfil;Pendiente
+CP-09;Me gusta y Match;Usuario A da Me gusta a B y luego B da Me gusta a A;Al segundo Me gusta aparece "¡Es un Match!" y se habilita el chat;Pendiente
+CP-10;Me gusta y Match;Dar Me gusta dos veces a la misma persona;No se duplica el Me gusta ni el Match;Pendiente
+CP-11;Solicitud de mensaje;Enviar una solicitud con un mensaje válido a otra persona;Solicitud creada y aparece como pendiente en el receptor;Pendiente
+CP-12;Solicitud de mensaje;Enviar una segunda solicitud a la misma persona;Mensaje "Ya enviaste una solicitud a esta persona" (409);Pendiente
+CP-13;Solicitud de mensaje;Enviar la 6.ª solicitud del día;Mensaje de límite diario (429);Pendiente
+CP-14;Solicitud de mensaje;Enviar una solicitud con mensaje vacío o de más de 200 caracteres;Mensaje de error de validación (400);Pendiente
+CP-15;Chat;Aceptar una solicitud recibida y abrir Chat;El contacto aparece y se pueden intercambiar mensajes;Pendiente
+CP-16;Chat;Consultar o enviar mensajes a alguien sin Match ni solicitud aceptada (por API);Respuesta 403 y no se guarda el mensaje;Pendiente
+CP-17;Chat;Rechazar una solicitud;El remitente no puede chatear con el receptor;Pendiente
+CP-18;Perfil de entrenadores;Registrarse como entrenador y publicar especialidad, experiencia y tarifa;El perfil aparece en la lista de Entrenadores;Pendiente
+CP-19;Perfil de entrenadores;Un usuario normal intenta editar el perfil de entrenador (por API);Respuesta 403;Pendiente
+CP-20;Seguridad;Llamar a una ruta protegida sin token;Respuesta 401;Pendiente
+CP-21;Seguridad;Reportar a un usuario con motivo válido;Reporte guardado y esa persona deja de aparecer en Descubrir;Pendiente
