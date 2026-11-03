@@ -1,47 +1,139 @@
 # Spotter 🏋️‍♂️🤝
 
-**Spotter** es una plataforma digital desarrollada como proyecto de aula para la *Fundación Universitaria Los Libertadores*. Su objetivo principal es conectar a personas que buscan compañeros de entrenamiento con intereses, horarios y objetivos compatibles, además de facilitar el descubrimiento y contratación de entrenadores profesionales[cite: 8].
+**Spotter** es una plataforma web desarrollada como proyecto de aula en la *Fundación Universitaria Los Libertadores*. Conecta a personas que buscan compañeros de entrenamiento con objetivos, nivel y horarios compatibles, y facilita el contacto con entrenadores profesionales.
 
----
+## 🔗 Enlaces del proyecto
 
-## 🚀 Descripción del Proyecto (MVP)
-En esta Fase 2 ("De la nube a la práctica"), se ha construido el Producto Mínimo Viable (MVP) funcional de Spotter, abarcando tanto el desarrollo del backend, frontend, conexión a base de datos en la nube y su respectivo despliegue público[cite: 1, 3].
+| Recurso | Enlace |
+|---|---|
+| **Aplicación desplegada** | https://spotter-peach-delta.vercel.app/ |
+| **API (backend)** | https://spotter-ql7f.onrender.com |
+| **Documentación de la API (Swagger)** | https://spotter-ql7f.onrender.com/api/docs |
+| **Repositorio** | https://github.com/Esneider2406/Spotter |
+| **Plan de pruebas** | [docs/plan-de-pruebas.md](docs/plan-de-pruebas.md) |
+| **Reporte de bugs** | [docs/REPORTE_BUGS.md](docs/REPORTE_BUGS.md) · [Issues](https://github.com/Esneider2406/Spotter/issues) |
+| **Informe reflexivo** | [docs/INFORME_REFLEXIVO.md](docs/INFORME_REFLEXIVO.md) |
+| **Video de demostración** | PEGAR_ENLACE_DEL_VIDEO |
 
-### Funcionalidades Principales del MVP:
-1. **Registro de Usuarios:** Creación de cuentas seguras e inicio de sesión[cite: 8].
-2. **Perfil Deportivo:** Gestión de información personalizada (objetivos, nivel de entrenamiento y horarios disponibles)[cite: 8].
-3. **Descubrimiento de Personas:** Visualización de perfiles compatibles para entrenar[cite: 8].
-4. **Me gusta y Match:** Sistema de interés mutuo que activa canales de comunicación[cite: 8].
-5. **Solicitud de Mensaje:** Opción para enviar un único mensaje directo para llamar la atención antes de hacer *Match* (con restricciones de control para evitar abusos)[cite: 8].
-6. **Chat:** Conversación habilitada exclusivamente tras un *Match* exitoso o una solicitud aceptada[cite: 8].
-7. **Perfil de Entrenadores:** Espacio para que profesionales del fitness publiquen sus servicios, experiencia y tarifas[cite: 8].
+> ⏳ El backend está en un plan gratuito de Render: si estuvo inactivo, la primera petición puede tardar cerca de un minuto en responder.
 
----
+## 🚀 Funcionalidades del MVP
 
-## 🛠️ Tecnologías Utilizadas
+1. **Registro e inicio de sesión** con contraseñas cifradas y autenticación por token JWT.
+2. **Perfil deportivo:** objetivo, nivel, tipo de entrenamiento, horarios, ciudad y biografía.
+3. **Descubrimiento de personas** ordenadas por porcentaje de compatibilidad (0–100).
+4. **Me gusta y Match:** el interés mutuo habilita la comunicación.
+5. **Solicitud de mensaje:** un único mensaje antes del Match, con límite de 5 por día.
+6. **Chat** disponible solo tras un Match o una solicitud aceptada.
+7. **Perfil de entrenadores:** especialidad, años de experiencia, descripción y tarifa.
+8. **Reportes** de comportamiento inapropiado; la persona reportada deja de aparecer en Descubrir.
 
-* **Frontend:** *(Ej. React / Vue / HTML, CSS y JavaScript)*[cite: 2, 3]
-* **Backend:** *(Ej. Node.js con Express / Python con Flask o Django)*[cite: 2, 3]
-* **Base de Datos:** *(Ej. MongoDB Atlas / PostgreSQL / Firebase)*[cite: 2, 3]
-* **Control de Versiones:** Git, GitHub / GitLab
-* **Despliegue (Cloud):** *(Ej. Vercel para frontend y Render/Railway para backend)*[cite: 5, 6]
+## 🛠️ Tecnologías
 
----
+| Capa | Tecnología |
+|---|---|
+| Frontend | React 18, React Router, Vite |
+| Backend | Node.js, Express, JWT, bcryptjs, CORS |
+| Base de datos | PostgreSQL en la nube (Neon) |
+| Pruebas | Jest, Supertest |
+| CI | GitHub Actions |
+| Documentación de API | OpenAPI 3 + Swagger UI |
+| Despliegue | Vercel (frontend) · Render (backend) · Neon (base de datos) |
 
-## 📂 Estructura de Ramas del Repositorio
+## 📂 Estructura del repositorio
 
-El proyecto maneja la siguiente estrategia de control de versiones:
-* `main`: Rama principal con el código estable listo para producción[cite: 2].
-* `develop`: Rama de integración para las nuevas funcionalidades[cite: 2].
-* `feature/[nombre-funcionalidad]`: Ramas individuales de trabajo para cada historia de usuario (ej. `feature/registro-usuarios`, `feature/chat`)[cite: 2].
+```
+spotter-codigo-base/
+├── backend/
+│   ├── src/          # app, rutas, middleware, utilidades
+│   ├── tests/        # pruebas con Jest
+│   ├── sql/          # schema.sql
+│   └── docs/         # openapi.json
+├── frontend/
+│   └── src/          # páginas, api.js, autenticación
+├── docs/             # plan de pruebas, bugs, informe reflexivo
+└── .github/          # workflow de CI y plantillas
+```
 
----
+## 🌿 Estrategia de ramas
 
-## ⚙️ Instrucciones de Instalación y Ejecución Local
+- `main`: código estable y desplegado.
+- `develop`: integración de nuevas funcionalidades.
+- `feature/<nombre>`: una rama por funcionalidad, integrada mediante Pull Request con revisión de código.
 
-Si deseas clonar y probar el proyecto en tu máquina local, sigue estos pasos:
+## ⚙️ Instalación y ejecución local
 
 ### 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/tu-usuario/spotter.git](https://github.com/tu-usuario/spotter.git)
-cd spotter
+git clone https://github.com/Esneider2406/Spotter.git
+cd Spotter/spotter-codigo-base
+```
+
+### 2. Backend
+```bash
+cd backend
+npm install
+cp .env.example .env     # completa los valores (ver tabla abajo)
+npm run db:init          # crea las tablas en la base de datos
+npm run dev              # http://localhost:4000
+```
+
+| Variable | Descripción |
+|---|---|
+| `PORT` | Puerto del servidor (por defecto 4000) |
+| `DATABASE_URL` | Cadena de conexión PostgreSQL |
+| `DB_SSL` | `true` si la base de datos está en la nube |
+| `JWT_SECRET` | Clave larga y aleatoria para firmar tokens |
+| `CORS_ORIGIN` | Origen(es) permitidos, separados por coma y **sin `/` al final** |
+
+### 3. Frontend
+```bash
+cd frontend
+npm install
+cp .env.example .env     # VITE_API_URL=http://localhost:4000
+npm run dev              # http://localhost:5173
+```
+
+`VITE_API_URL` es la URL del backend, **sin `/` al final**.
+
+## 🧪 Pruebas
+
+```bash
+cd backend
+npm test                   # ejecuta todas las pruebas
+npm test -- --coverage     # con reporte de cobertura
+```
+
+Las pruebas cubren validaciones, reglas de chat y solicitudes, cálculo de compatibilidad y rutas básicas de la API. El plan formal de casos (ID, historia de usuario, pasos, resultado esperado y estado) está en [docs/plan-de-pruebas.md](docs/plan-de-pruebas.md). El workflow de CI ejecuta las pruebas del backend y el build del frontend en cada push y Pull Request.
+
+## 📡 Endpoints principales
+
+Documentación interactiva en [/api/docs](https://spotter-ql7f.onrender.com/api/docs).
+
+| Método | Ruta | Auth | Descripción |
+|---|---|---|---|
+| GET | `/health` | No | Estado del servidor |
+| POST | `/api/auth/registro` | No | Crear cuenta (usuario o entrenador) |
+| POST | `/api/auth/login` | No | Iniciar sesión y obtener token |
+| GET / PUT | `/api/perfil` | JWT | Ver o guardar el perfil deportivo |
+| GET | `/api/descubrir` | JWT | Personas compatibles |
+| POST | `/api/likes/{id}` | JWT | Me gusta; si es mutuo, crea el Match |
+| GET / POST | `/api/solicitudes` | JWT | Ver o enviar solicitudes de mensaje |
+| PUT | `/api/solicitudes/{id}` | JWT | Aceptar o rechazar una solicitud |
+| GET | `/api/chat` | JWT | Contactos con los que puedo chatear |
+| GET / POST | `/api/chat/{id}` | JWT | Historial y envío de mensajes |
+| GET | `/api/entrenadores` | JWT | Listar entrenadores |
+| PUT | `/api/entrenadores/perfil` | JWT (entrenador) | Publicar o editar perfil de entrenador |
+| POST | `/api/reportes` | JWT | Reportar a un usuario |
+
+## 🔒 Seguridad
+
+- Contraseñas cifradas con bcrypt.
+- Autenticación con JWT (expira a los 7 días) y control de acceso por rol.
+- Validación de datos en el servidor.
+- Secretos únicamente en variables de entorno; el archivo `.env` real no se sube al repositorio.
+- CORS restringido al origen del frontend.
+
+## 👤 Autor
+
+**Esneider Velasco Cruz**
