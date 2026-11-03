@@ -13,7 +13,7 @@
 | **Plan de pruebas** | [docs/plan-de-pruebas.md](docs/plan-de-pruebas.md) |
 | **Reporte de bugs** | [docs/REPORTE_BUGS.md](docs/REPORTE_BUGS.md) · [Issues](https://github.com/Esneider2406/Spotter/issues) |
 | **Informe reflexivo** | [docs/INFORME_REFLEXIVO.md](docs/INFORME_REFLEXIVO.md) |
-| **Video de demostración** | PEGAR_ENLACE_DEL_VIDEO |
+| **Video de demostración** |https://drive.google.com/file/d/1oOHLe6UgM9AWhnwI2LD1D4bq6l3tDPai/view?usp=sharing|
 
 > ⏳ El backend está en un plan gratuito de Render: si estuvo inactivo, la primera petición puede tardar cerca de un minuto en responder.
 
