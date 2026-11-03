@@ -6,9 +6,9 @@ const openapi = require('../docs/openapi.json');
 
 const app = express();
 
-const origenes = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim()) : '*';
+const origenes = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim().replace(/\/+$/, '')) : '*';
 app.use(cors({ origin: origenes }));
-app.use(express.json());
+app.use(express.json({ limit: '400kb' })); 
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapi));
@@ -19,6 +19,7 @@ app.use('/api/descubrir', require('./routes/descubrir'));
 app.use('/api/likes', require('./routes/likes'));
 app.use('/api/solicitudes', require('./routes/solicitudes'));
 app.use('/api/chat', require('./routes/chat'));
+app.use('/api/notificaciones', require('./routes/notificaciones'));
 app.use('/api/entrenadores', require('./routes/entrenadores'));
 app.use('/api/reportes', require('./routes/reportes'));
 

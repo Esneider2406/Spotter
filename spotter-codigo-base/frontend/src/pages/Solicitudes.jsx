@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import Avatar from '../components/Avatar.jsx';
 
 export default function Solicitudes() {
   const [lista, setLista] = useState([]);
@@ -21,7 +22,7 @@ export default function Solicitudes() {
       <div className="rejilla">
         {lista.map((s) => (
           <article key={s.id} className="tarjeta">
-            <h2>{s.de_nombre}</h2>
+            <div className="persona"><Avatar foto={s.de_foto} nombre={s.de_nombre} /><h2>{s.de_nombre}</h2></div>
             <p>“{s.mensaje}”</p>
             <div className="acciones">
               <button className="primario" onClick={() => responder(s.id, 'aceptada')}>Aceptar</button>

@@ -2,17 +2,28 @@ const router = require('express').Router();
 const db = require('../db');
 const ah = require('../utils/ah');
 const { auth, soloRol } = require('../middleware/auth');
-const { validarPerfil } = require('../utils/validaciones');
+const { validarPerfil, validarFoto } = require('../utils/validaciones');
 
 router.use(auth);
 
 // GET /api/perfil → datos del usuario + su perfil (deportivo o de entrenador)
 router.get('/', ah(async (req, res) => {
-  const u = await db.query('SELECT id, nombre, email, rol FROM usuarios WHERE id = $1', [req.usuario.id]);
+  const u = await db.query('SELECT id, nombre, email, rol, foto FROM usuarios WHERE id = $1', [req.usuario.id]);
   if (!u.rowCount) return res.status(404).json({ error: 'Usuario no encontrado' });
   const tabla = req.usuario.rol === 'entrenador' ? 'perfiles_entrenador' : 'perfiles_deportivos';
   const p = await db.query(`SELECT * FROM ${tabla} WHERE usuario_id = $1`, [req.usuario.id]);
   res.json({ usuario: u.rows[0], perfil: p.rows[0] || null });
+}));
+
+// PUT /api/perfil/foto {foto} → sube o cambia la foto (data URL JPEG); {foto: null} la elimina
+router.put('/foto', ah(async (req, res) => {
+  const { foto } = req.body;
+  if (foto !== null) {
+    const err = validarFoto(foto);
+    if (err) return res.status(400).json({ error: err });
+  }
+  await db.query('UPDATE usuarios SET foto = $1 WHERE id = $2', [foto, req.usuario.id]);
+  res.json({ foto });
 }));
 
 // PUT /api/perfil → crea o actualiza el perfil deportivo

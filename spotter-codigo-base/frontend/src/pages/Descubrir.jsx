@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import Avatar from '../components/Avatar.jsx';
 
 const ETIQUETAS = { perder_peso: 'Perder peso', ganar_musculo: 'Ganar músculo', resistencia: 'Resistencia', salud_general: 'Salud general', rendimiento: 'Rendimiento', manana: 'mañana', tarde: 'tarde', noche: 'noche' };
 
@@ -42,6 +43,7 @@ export default function Descubrir() {
   return (
     <section>
       <h1>Personas para entrenar</h1>
+      <p className="suave">Ordenadas por compatibilidad con tu objetivo, nivel y horarios.</p>
       {msg && <p className="ok" role="status">{msg}</p>}
       {error && <p className="error" role="alert">{error}</p>}
       {cargando && <p className="suave">Cargando…</p>}
@@ -50,12 +52,17 @@ export default function Descubrir() {
         {lista.map((p) => (
           <article key={p.id} className="tarjeta">
             <div className="fila">
-              <h2>{p.nombre}</h2>
+              <div className="persona"><Avatar foto={p.foto} nombre={p.nombre} /><h2>{p.nombre}</h2></div>
               <span className="puntaje" title="Compatibilidad">{p.compatibilidad}%</span>
             </div>
-            <p><strong>{ETIQUETAS[p.objetivo]}</strong> · {p.nivel}</p>
+            <div className="chips">
+              <span className="chip fuerte">{ETIQUETAS[p.objetivo]}</span>
+              <span className="chip">{p.nivel}</span>
+              {p.horarios.map((h) => <span key={h} className="chip">{ETIQUETAS[h]}</span>)}
+            </div>
             {p.tipo_entrenamiento && <p>{p.tipo_entrenamiento}</p>}
-            <p className="suave">Entrena en la {p.horarios.map((h) => ETIQUETAS[h]).join(', ')}{p.ciudad ? ` · ${p.ciudad}` : ''}</p>
+            {p.ciudad && <p className="suave">{p.ciudad}</p>}
+            <div className="medidor" aria-hidden="true"><span style={{ width: `${p.compatibilidad}%` }} /></div>
             {p.bio && <p>{p.bio}</p>}
             <div className="acciones">
               <button className="primario" onClick={() => meGusta(p.id)}>Me gusta</button>

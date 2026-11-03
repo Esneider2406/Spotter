@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
+import Avatar from '../components/Avatar.jsx';
+import { redimensionar } from '../imagen.js';
 
 const OBJETIVOS = { perder_peso: 'Perder peso', ganar_musculo: 'Ganar músculo', resistencia: 'Resistencia', salud_general: 'Salud general', rendimiento: 'Rendimiento deportivo' };
 const NIVELES = { principiante: 'Principiante', intermedio: 'Intermedio', avanzado: 'Avanzado' };
@@ -14,11 +16,13 @@ export default function Perfil() {
       ? { especialidad: '', experiencia_anios: 0, descripcion: '', tarifa: '' }
       : { objetivo: 'ganar_musculo', nivel: 'principiante', tipo_entrenamiento: '', horarios: [], ciudad: '', bio: '' }
   );
+  const [foto, setFoto] = useState(null);
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api('/api/perfil').then(({ perfil }) => {
+    api('/api/perfil').then(({ usuario: u, perfil }) => {
+      setFoto(u.foto || null);
       if (perfil) setF((prev) => ({ ...prev, ...Object.fromEntries(Object.entries(perfil).map(([k, v]) => [k, v ?? ''])) }));
     }).catch((e) => setError(e.message));
   }, []);
@@ -26,6 +30,32 @@ export default function Perfil() {
   const cambiar = (e) => setF({ ...f, [e.target.name]: e.target.value });
   const alternarHorario = (h) =>
     setF({ ...f, horarios: f.horarios.includes(h) ? f.horarios.filter((x) => x !== h) : [...f.horarios, h] });
+
+  const subirFoto = async (e) => {
+    const archivo = e.target.files[0];
+    e.target.value = '';
+    if (!archivo) return;
+    setMsg(''); setError('');
+    try {
+      const imagen = await redimensionar(archivo);
+      await api('/api/perfil/foto', { method: 'PUT', body: { foto: imagen } });
+      setFoto(imagen);
+      setMsg('Foto actualizada');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const quitarFoto = async () => {
+    setMsg(''); setError('');
+    try {
+      await api('/api/perfil/foto', { method: 'PUT', body: { foto: null } });
+      setFoto(null);
+      setMsg('Foto eliminada');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const guardar = async (e) => {
     e.preventDefault();
@@ -41,6 +71,17 @@ export default function Perfil() {
   return (
     <section className="tarjeta angosta">
       <h1>{esEntrenador ? 'Tu perfil de entrenador' : 'Tu perfil deportivo'}</h1>
+      <div className="foto-perfil">
+        <Avatar foto={foto} nombre={usuario.nombre} tam={96} />
+        <div>
+          <label className="boton-archivo">
+            {foto ? 'Cambiar foto' : 'Subir foto'}
+            <input type="file" accept="image/*" onChange={subirFoto} className="solo-lector" />
+          </label>
+          {foto && <button type="button" className="enlace" onClick={quitarFoto}>Quitar foto</button>}
+          <p className="suave">Se recorta en cuadrado y se reduce automáticamente.</p>
+        </div>
+      </div>
       <form onSubmit={guardar}>
         {esEntrenador ? (
           <>

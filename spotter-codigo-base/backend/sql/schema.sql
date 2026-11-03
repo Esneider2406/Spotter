@@ -73,3 +73,7 @@ CREATE TABLE IF NOT EXISTS reportes (
   motivo VARCHAR(300) NOT NULL,
   creado_en TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Foto de perfil (imagen JPEG reducida, guardada como data URL). Seguro de ejecutar varias veces.
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS foto TEXT;
+

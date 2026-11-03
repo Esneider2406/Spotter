@@ -32,4 +32,14 @@ function validarPerfilEntrenador(b = {}) {
   return e;
 }
 
-module.exports = { validarRegistro, validarPerfil, validarPerfilEntrenador };
+const FOTO_RE = /^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/;
+const FOTO_MAX = 200000; // caracteres (~150 KB)
+
+// Devuelve null si la foto es válida, o el texto del error
+function validarFoto(foto) {
+  if (typeof foto !== 'string' || !FOTO_RE.test(foto)) return 'La foto debe ser una imagen JPEG válida';
+  if (foto.length > FOTO_MAX) return 'La foto es demasiado grande';
+  return null;
+}
+
+module.exports = { validarRegistro, validarPerfil, validarPerfilEntrenador, validarFoto };

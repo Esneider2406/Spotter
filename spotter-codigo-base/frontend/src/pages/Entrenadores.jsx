@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import Avatar from '../components/Avatar.jsx';
 
 export default function Entrenadores() {
   const [lista, setLista] = useState([]);
@@ -27,7 +28,7 @@ export default function Entrenadores() {
       <div className="rejilla">
         {lista.map((e) => (
           <article key={e.id} className="tarjeta">
-            <h2>{e.nombre}</h2>
+            <div className="persona"><Avatar foto={e.foto} nombre={e.nombre} /><h2>{e.nombre}</h2></div>
             <p><strong>{e.especialidad}</strong> · {e.experiencia_anios} {e.experiencia_anios === 1 ? 'año' : 'años'} de experiencia</p>
             {e.descripcion && <p>{e.descripcion}</p>}
             {e.tarifa != null && <p className="suave">Desde ${Number(e.tarifa).toLocaleString('es-CO')} por sesión</p>}

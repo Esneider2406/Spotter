@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const BASE = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '');
 
 // Cliente simple para hablar con el backend; lanza Error con el mensaje de la API
 export async function api(ruta, { method = 'GET', body } = {}) {

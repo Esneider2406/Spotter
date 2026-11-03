@@ -21,7 +21,7 @@ async function tieneAcceso(yo, otro) {
 // GET /api/chat → contactos con los que puedo chatear
 router.get('/', ah(async (req, res) => {
   const r = await db.query(
-    `SELECT id, nombre, rol FROM usuarios WHERE id IN (
+    `SELECT id, nombre, rol, foto FROM usuarios WHERE id IN (
        SELECT CASE WHEN usuario_a = $1 THEN usuario_b ELSE usuario_a END FROM matches WHERE usuario_a = $1 OR usuario_b = $1
        UNION
        SELECT CASE WHEN de_usuario = $1 THEN a_usuario ELSE de_usuario END FROM solicitudes_mensaje
@@ -32,7 +32,7 @@ router.get('/', ah(async (req, res) => {
   res.json(r.rows);
 }));
 
-// GET /api/chat/:id → historial de mensajes con esa persona
+// GET /api/chat/:id → historial de mensajes con esa persona (y los marca como leídos)
 router.get('/:id', ah(async (req, res) => {
   const otro = Number(req.params.id);
   if (!Number.isInteger(otro)) return res.status(400).json({ error: 'Destino inválido' });
@@ -43,6 +43,10 @@ router.get('/:id', ah(async (req, res) => {
     `SELECT id, de_usuario, contenido, creado_en FROM mensajes
       WHERE (de_usuario = $1 AND a_usuario = $2) OR (de_usuario = $2 AND a_usuario = $1)
       ORDER BY creado_en ASC, id ASC`,
+    [req.usuario.id, otro]
+  );
+  await db.query(
+    'UPDATE mensajes SET leido = TRUE WHERE a_usuario = $1 AND de_usuario = $2 AND leido = FALSE',
     [req.usuario.id, otro]
   );
   res.json(r.rows);
