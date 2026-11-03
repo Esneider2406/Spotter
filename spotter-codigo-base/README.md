@@ -15,7 +15,7 @@
 | **Informe reflexivo** | [docs/INFORME_REFLEXIVO.md](docs/INFORME_REFLEXIVO.md) |
 | **Video de demostración** |https://drive.google.com/file/d/1oOHLe6UgM9AWhnwI2LD1D4bq6l3tDPai/view?usp=sharing|
 
-> ⏳ El backend está en un plan gratuito de Render: si estuvo inactivo, la primera petición puede tardar cerca de un minuto en responder.
+
 
 ## 🚀 Funcionalidades del MVP
 
